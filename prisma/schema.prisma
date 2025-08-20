@@ -7,20 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum LevelClass {
-  beginner
-  elementary
-  intermediate
-  upper_intermediate
-  advanced
-}
-
-enum StatusClass {
-  private
-  protected
-  public
-}
-
 enum Status{
   active
   inactive
@@ -39,46 +25,29 @@ model User {
   timezone       String     @default("Asia/Ho_Chi_Minh")
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
-  classes        Class[]
   activities     Activity[]
   intervalSendMessage Int?
-  scheduleKnowledgesId String?
+  scheduleKnowledgeId String? @unique
+  scheduleKnowledge Knowledge? @relation(fields: [scheduleKnowledgeId], references: [id], onDelete: Cascade)
   scheduleTypeQuestion TypeQuestion?
-  scheduleKnowledges Knowledge? @relation(fields: [scheduleKnowledgesId], references: [id])
   streak         Int        @default(0)
   longestStreak  Int        @default(0)
   lastActiveDate DateTime?
+  topics         Topic[]
  
   @@map("users")
 }
 
-
-model Class {
-  id        String   @id @default(uuid())
-  userId    String   
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  prompt    String
-  status    Status  @default(active)
-  deleted   Boolean     @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  topics    Topic[]
-
-  @@map("classes")
-}
-
 model Topic {
   id          String      @id @default(uuid())
-  classId     String
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   prompt      String?     @default("Không có mô tả")
   deleted     Boolean     @default(false)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   status      Status      @default(active)
-  class       Class       @relation(fields: [classId], references: [id], onDelete: Cascade)
   knowledges  Knowledge[]
 
   @@map("topics")
@@ -90,12 +59,11 @@ model Knowledge {
   parent    Knowledge?  @relation("KnowledgeParent", fields: [parentId], references: [id], onDelete: Cascade)
   children  Knowledge[] @relation("KnowledgeParent")
   topicId   String
-  topic     Topic      @relation(fields: [topicId], references: [id])
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
   name      String
-  prompt    String     @default("Không có mô tả")
   theory    String?
   reviewAt  DateTime?  
-  userSchedule User[]
+  userSchedule User?
   deleted   Boolean    @default(false)
   status    Status     @default(active)
   createdAt DateTime   @default(now()) 
