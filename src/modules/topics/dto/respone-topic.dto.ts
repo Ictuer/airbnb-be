@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Status, StatusClass } from "@prisma/client";
+import { Status } from "@prisma/client";
 import { IsBoolean, IsDate, IsEnum, IsNumber, IsString } from "class-validator";
 
 export class ResponseTopicDto{
@@ -9,13 +9,6 @@ export class ResponseTopicDto{
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   id: string;
-
-  @IsString()
-  @ApiProperty({
-    description: 'The class id of the topic',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  })
-  classId: string;
 
   @IsString()
   @ApiProperty({

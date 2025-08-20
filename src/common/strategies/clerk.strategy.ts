@@ -31,7 +31,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     try {
       const enviroment = this.env.get('NODE_ENV');
       if(enviroment === 'test') {
-        const userInfo = await this.usersService.getUserInfo('user_30rn2su7l5boNjTYN0nrzZXNeag');
+        const userInfo = await this.usersService.getUserInfo('user_31XpMiCLzDOcNZnq8EPRgLI2p3J');
         return userInfo;
       }
       const tokenPayload = await verifyToken(token, {

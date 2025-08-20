@@ -28,43 +28,24 @@ export class TopicsController {
     return this.topicsService.getTopic(topicId, user.id);
   }
 
-  // GET: /topics/class/:id
-  @ApiOperation({ summary: 'Get all topics for a class' })
-  @ApiParam({ name: 'id', description: 'ID of the class' , example: '3f92a5df-09d9-4ae1-ab99-421c7da12ac9'})
+  // GET: /topics
+  @ApiOperation({ summary: 'Get all topics for a user' })
   @ApiResponse({ type: ResponseTopicDto, isArray: true })
-  @Get('class/:id')
+  @Get()
   async getTopics(
-    @Param('id') classId: string,
     @CurrentUser() user: User
   ) : Promise<ResponseTopicDto[]> {
-    return this.topicsService.getTopics(classId, user.id);
+    return this.topicsService.getTopics(user.id);
   }
 
-  // POST: /topics/class/:id
+  // POST: /topics
   @ApiOperation({ summary: 'Create a new topic' })
-  @ApiParam({ name: 'id', description: 'ID of the class' , example: '3f92a5df-09d9-4ae1-ab99-421c7da12ac9'})
-  @Post('class/:id')
+  @Post()
   async createTopic(
     @Body() createTopicDto: CreateTopicDto, 
-    @Param('id') classId: string,
     @CurrentUser() user: User
   ) : Promise<Topic> {
-    return this.topicsService.createTopic(createTopicDto, classId, user.id);
-  }
-
-  // POST: /topics/class/:id/generate
-  @ApiOperation({ summary: 'Generate topics for a class' })
-  @ApiParam({ name: 'id', description: 'ID of the class' , example: '3f92a5df-09d9-4ae1-ab99-421c7da12ac9'})
-  @ApiQuery({ name: 'maxTokens', description: 'Maximum number of tokens to generate' , example: 1000})
-  @ApiQuery({ name: 'temperature', description: 'Temperature for the model (0.0 - 1.0)' , example: 0.5})
-  @Post('class/:id/generate')
-  async generateTopic(
-    @Param('id') classId: string,
-    @Query('maxTokens') maxTokens: number,
-    @Query('temperature') temperature: number,
-    @CurrentUser() user: User
-  ) : Promise<Topic[]> {
-    return this.topicsService.generateTopic(classId, user.id, maxTokens || 1000, temperature || 0.5);
+    return this.topicsService.createTopic(createTopicDto, user.id);
   }
 
   // PATCH: /topics/:id
